@@ -1,0 +1,1099 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f1e7">
+  <meta name="description" content="A Lantern for the Night Parade，親子共讀互動英文電子書。">
+  <title>A Lantern for the Night Parade</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #28233c;
+      --muted: #61596d;
+      --purple: #57427e;
+      --deep: #382a55;
+      --paper: #f7f1e7;
+      --card: #fffdf8;
+      --line: #e8dfd5;
+      --serif: "DM Serif Text", Georgia, serif;
+      --sans: "Instrument Sans", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: radial-gradient(ellipse at top, #fcf8f0, var(--paper) 65%); font: 16px/1.55 var(--sans); }
+    button, input, select { font: inherit; }
+    button, select { min-height: 44px; min-width: 44px; }
+    button { color: var(--deep); background: #fffdf8; border: 1px solid #ddd2e5; border-radius: 12px; padding: .55rem .85rem; font-weight: 700; cursor: pointer; }
+    button:hover { background: #f3ecf8; border-color: #b49cc7; }
+    button:disabled { opacity: .46; cursor: default; }
+    :focus-visible { outline: 3px solid #8b52b5; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    .wrap { width: min(1190px, calc(100% - 48px)); margin-inline: auto; }
+    .top { background: #fffdf8bb; border-bottom: 1px solid var(--line); }
+    .top .wrap { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .identity { display: flex; align-items: center; gap: 12px; font: 20px/1.1 var(--serif); }
+    .identity small { display: block; font: 12px/1.4 var(--sans); margin-top: 4px; color: var(--muted); }
+    .brand { width: 43px; height: 43px; display: grid; place-items: center; flex: none; background: #f5dfab; border-radius: 13px; color: #553126; }
+    .count { font-size: 14px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .shelf { padding-block: 29px 36px; }
+    .spread { display: grid; grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr); gap: clamp(18px, 3vw, 42px); padding: clamp(18px, 3.4vw, 43px); background: var(--card); border: 1px solid var(--line); border-radius: 24px; box-shadow: 0 12px 38px #32234b0c; align-items: start; }
+    .visual { margin: 0; min-width: 0; }
+    .art { display: block; width: 100%; aspect-ratio: 1.18; object-fit: cover; border-radius: 16px; background: #322651; }
+    .scene { position: relative; overflow: hidden; isolation: isolate; background: radial-gradient(ellipse at 70% 45%, #594566 5%, #30294f 53%, #201b39 100%); }
+    .wall { position: absolute; inset: 0 0 12%; background: repeating-linear-gradient(0deg, transparent 0 calc(16% - 1px), #e0b8eb14 calc(16% - 1px) 16%); border-bottom: 2px solid #79668880; }
+    .floor { position: absolute; inset: 88% 0 0; background: #251e3a; }
+    .wall::before { content: ""; position: absolute; inset: 0; opacity: .25; background: repeating-linear-gradient(90deg, transparent 0 calc(26% - 1px), #d5c3e654 calc(26% - 1px) 26%); }
+    .beam { position: absolute; inset: 25% 27% 22% 26%; background: linear-gradient(90deg,#ffac3822,#ffc45438); clip-path: polygon(0 46%,100% 8%,100% 93%,0 63%); transition: transform .5s ease; }
+    .lantern { position: absolute; z-index: 2; width: 24%; aspect-ratio: 1.05; top: 42%; left: 17%; border-radius: 45%; border: 2px solid #ffb56380; background: radial-gradient(ellipse at 65% 45%, #ffdb77, #ef804a 64%, #bf4d47); box-shadow: 0 0 42px #e98c4b77, inset -12px -7px 24px #bf3e536e; transition: transform .5s ease; }
+    .lantern::before { content: ""; position: absolute; width: 37%; height: 47%; left: 31.5%; bottom: 96%; border: 3px solid #cf887b; border-bottom: 0; border-radius: 80% 80% 0 0; }
+    .lantern::after { content: ""; position: absolute; inset: -5% 25%; border-block: 8px solid #803b53; border-radius: 22%; }
+    .ribs { position: absolute; inset: 0 19%; border-inline: 2px solid #a6434a52; border-radius: 48%; }
+    .ribs::after { content: ""; position: absolute; inset: 0 29%; border-inline: 2px solid #a6434a52; border-radius: 48%; }
+    .projection { position: absolute; left: 69%; top: 47%; width: 23%; aspect-ratio: 1; transform: translate(-50%, -50%); transition: scale .5s ease; }
+    .glow, .wheel { position: absolute; inset: 0; border-radius: 50%; background: #ffe07a; box-shadow: 0 0 22px #ffd572a0, 0 0 80px #ffbd6a51; }
+    .glow { background: radial-gradient(circle at 42% 38%, #fff2b0, #ffce59); }
+    .far .lantern { transform: translate(-39%, 11%) scale(.86); }
+    .far .beam { transform: scale(1.23, 1.23); transform-origin: 85% 50%; }
+    .far .projection { scale: 1.45; transform-origin: 0 0; }
+    .house { display: none; position: absolute; inset: -47% -30% -36%; border: 3px solid #ffe5a4; border-top: 0; border-radius: 0 0 7% 7%; filter: drop-shadow(0 0 8px #ffd26b); }
+    .house::before { content: ""; position: absolute; left: 0; right: 0; top: 0; aspect-ratio: 1; border-inline-start: 3px solid #ffe5a4; border-block-start: 3px solid #ffe5a4; rotate: 45deg; scale: .71; translate: 0 -50%; }
+    .house::after { content: ""; position: absolute; inset: 33% 50% 16% auto; border-left: 2px solid #754a50; }
+    .wheel { display: none; background: repeating-conic-gradient(#6f4b66 0 4deg, #ffe07a 4deg 60deg); border: 6px solid #ffe6a1; }
+    .wheel::after { content: ""; position: absolute; inset: 40%; border-radius: 50%; background: #6f4b66; }
+    .show-house .house, .show-wheel .wheel { display: block; }
+    .show-house.motion .house { animation: reveal 1.2s ease both; }
+    .show-wheel.motion .wheel { animation: roll 1.35s ease-out both; }
+    .show-wheel .glow { visibility: hidden; }
+    .show-wheel:not(.motion) .wheel { transform: translateX(28%) rotate(120deg); }
+    @keyframes reveal { from { opacity: 0; transform: translateY(12%); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes roll { from { transform: translateX(-55%) rotate(-120deg); } to { transform: translateX(28%) rotate(120deg); } }
+    figcaption { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 14px; color: var(--muted); }
+    .page-kicker { color: #6e537c; margin: 0 0 6px; font-weight: 700; font-size: 13px; letter-spacing: .09em; }
+    h1 { font: 400 clamp(30px,4.1vw,60px)/1.04 var(--serif); letter-spacing: -.035em; margin: 0 0 15px; }
+    .story { font: 400 clamp(20px,2.15vw,27px)/1.38 var(--serif); margin: 0 0 12px; }
+    .story-tools, .tools, .choices, .voice-tools { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+    .quiet { background: #f8f2fb; border-color: #ebe1f0; font-size: 14px; }
+    .plain { border-color: transparent; background: transparent; font-size: 14px; }
+    .prompt { margin-top: 16px; background: #f6f0fc; border: 1px solid #e7d9f0; border-radius: 17px; padding: clamp(10px, 1.7vw, 18px); }
+    .prompt-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    h2 { font-size: 18px; line-height: 1.3; margin: 0; }
+    .levels { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 6px; margin: 7px 0 0; }
+    .levels button { padding-inline: .2rem; font-size: 14px; line-height: 1.25; }
+    .levels button[aria-pressed="true"], .selected { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .question-box { padding-top: 12px; }
+    .question, .response-text { font: 400 20px/1.35 var(--serif); margin: 0 0 9px; }
+    .tools button { font-size: 13px; padding-inline: .55rem; }
+    .hint { background: #fffdf8; border-radius: 8px; padding: 8px 11px; margin: 8px 0; }
+    .answer { border-top: 1px solid #e3d7eb; margin-top: 10px; padding-top: 10px; }
+    .primary { background: var(--purple); border-color: var(--purple); color: white; }
+    .primary:hover { background: var(--deep); border-color: var(--deep); }
+    .choices { margin-top: 8px; }
+    .voice-tools { margin-top: 8px; }
+    .tools select { border: 1px solid #ddd2e5; border-radius: 10px; background: var(--card); color: var(--ink); padding: 3px 7px; font-size: 14px; }
+    .voice-tools span { overflow-wrap: anywhere; }
+    .status { font-size: 14px; color: var(--muted); margin: 7px 0 0; }
+    .status:empty { display: none; }
+    .custom { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 8px; }
+    input { min-width: 0; min-height: 44px; flex: 1 1 160px; border: 1px solid #d6c7df; border-radius: 10px; padding: 7px 10px; background: #fffdf8; color: var(--ink); }
+    .feedback { margin-top: 12px; padding: 13px; background: #fff4d9; border: 1px solid #efdcaa; border-radius: 12px; overflow-wrap: anywhere; }
+    .feedback p { margin: 0 0 7px; }
+    .feedback p:last-child { margin-bottom: 0; }
+    .follow { border-top: 1px solid #ead8a7; margin-top: 10px; padding-top: 10px; }
+    details { margin-top: 10px; }
+    summary { cursor: pointer; display: flex; align-items: center; gap: 6px; min-height: 44px; color: #5a4277; font-size: 14px; font-weight: 700; }
+    summary::before { content: "▸"; }
+    details[open] summary::before { content: "▾"; }
+    details p { margin: 0 0 6px; font-size: 14px; }
+    .note { margin: 13px 0 0; padding: 13px; border-radius: 12px; color: #4e3a62; background: #f6f0fc; }
+    .handoff { margin: 10px 0 0; color: #513868; font-size: 14px; font-weight: 700; }
+    .follow-reply { margin-top: 9px !important; overflow-wrap: anywhere; }
+    .reflect { margin-top: 16px; background: #fff4d9; border: 1px solid #efdcaa; border-radius: 16px; padding: 15px; }
+    .reflect p { margin: 8px 0; }
+    .reflect audio { width: min(100%, 360px); display: block; margin-top: 10px; }
+    .observation { margin-top: 16px; border-top: 1px solid var(--line); }
+    .observation-fields { display: flex; flex-wrap: wrap; gap: 10px 16px; margin: 10px 0; }
+    .observation-fields label { display: flex; align-items: center; gap: 6px; }
+    .observation-fields input { width: 5.5rem; flex: none; }
+    select, textarea { max-width: 100%; font: inherit; color: var(--ink); background: var(--card); border: 1px solid #d6c7df; border-radius: 10px; padding: 9px; }
+    select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #61506f 50%), linear-gradient(135deg, #61506f 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 30px !important; }
+    textarea { width: 100%; min-height: 82px; resize: vertical; }
+    .support { margin-top: 9px; }
+    .choice-panel, .designer { margin-top: 12px; padding-top: 12px; border-top: 1px solid #ead8a7; }
+    .designer label, .reflect label, .observation > label { display: block; margin-top: 9px; }
+    .designer input { width: 100%; margin-block: 5px 9px; }
+    .designer .tools label { margin: 0; }
+    .reflection-source { width: 100%; margin-top: 6px; }
+    .record-table { overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 9px; border: 1px solid var(--line); text-align: left; vertical-align: top; overflow-wrap: anywhere; min-width: 130px; }
+    th { background: #f6f0fc; }
+    .design-caption { padding-top: 10px; margin: 0; color: #584364; overflow-wrap: anywhere; }
+    .custom-light .glow { background: var(--light-color, #ffe07a); box-shadow: 0 0 34px var(--light-color, #ffe07a); }
+    .light-oval .glow { border-radius: 50%; transform: scaleX(1.25); }
+    .light-square .glow { border-radius: 8%; }
+    .light-star .glow { border-radius: 0; clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 95%,50% 73%,21% 95%,32% 57%,2% 35%,39% 35%); }
+    .pagination { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 17px; }
+    .steps { display: flex; gap: 4px; justify-content: center; }
+    .steps button { border-color: transparent; background: transparent; border-radius: 50%; padding: 0; color: #625372; }
+    .steps button:hover { background: #f5e7ce; }
+    .steps [aria-current="page"] { background: #f3dfae; color: #382a55; }
+    @media (max-width: 760px) {
+      .wrap { width: calc(100% - 24px); }
+      .top .wrap { min-height: 63px; }
+      .identity { font-size: 16px; }
+      .shelf { padding-block-start: 14px; }
+      .spread { grid-template-columns: minmax(0, 1fr); border-radius: 18px; }
+      .art { aspect-ratio: 1.28; }
+    }
+    @media (max-width: 475px) {
+      .pagination { flex-wrap: wrap; }
+      .steps { order: -1; width: 100%; }
+      .pagination > button { flex: 1; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <div class="identity">
+        <span class="brand" aria-hidden="true">🏮</span>
+        <div><span lang="en">A Lantern for the Night Parade</span><small>親子共讀・英文電子書</small></div>
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+  </header>
+  <main class="wrap shelf">
+    <article class="spread" aria-labelledby="page-title">
+      <figure class="visual">
+        <img class="art" id="cover" src="parade.png" alt="孩子和家長提著一盞紙燈籠走向夜間遊行">
+        <div id="scene" class="art scene" role="img" aria-label="紙燈籠在牆上投出黃色圓形光斑" hidden>
+          <div class="wall"></div><div class="floor"></div><div class="beam"></div>
+          <div class="lantern"><div class="ribs"></div></div>
+          <div class="projection"><div class="glow"></div><div class="house"></div><div class="wheel"></div></div>
+        </div>
+        <figcaption id="compare" hidden>
+          <button id="compare-button" type="button" aria-pressed="false" aria-describedby="compare-handoff">↔ 比較光斑</button>
+          <span id="view-label" aria-live="polite"></span>
+          <span id="compare-handoff">換孩子按，看看有什麼變化。</span>
+        </figcaption>
+        <p id="design-caption" class="design-caption" hidden></p>
+      </figure>
+      <div>
+        <p id="page-kicker" class="page-kicker"></p>
+        <h1 id="page-title" lang="en" tabindex="-1"></h1>
+        <p id="story" class="story" lang="en"></p>
+        <div class="story-tools">
+          <button id="listen-story" type="button" class="quiet">▶ 聽故事</button>
+          <button id="stop-audio" type="button" class="plain" hidden>■ 停止朗讀</button>
+          <button id="open-prompt" type="button" class="primary" aria-controls="prompt" aria-expanded="false" hidden>💬 聊聊燈籠</button>
+        </div>
+        <p id="audio-status" class="status" role="status"></p>
+        <p id="page-note" class="note" hidden></p>
+        <section id="prompt" class="prompt" aria-labelledby="prompt-title" hidden>
+          <div class="prompt-head">
+            <h2 id="prompt-title">你想聊哪一題？</h2>
+            <button id="close-prompt" type="button" class="plain">− 收起</button>
+          </div>
+          <p class="handoff">換孩子操作，選一題來聊。</p>
+          <div class="levels" role="group" aria-label="選擇你想聊的題目">
+            <button type="button" data-level="0" aria-pressed="false">👀 ① 看光斑</button>
+            <button type="button" data-level="1" aria-pressed="false">💡 ② 猜原因</button>
+            <button type="button" data-level="2" aria-pressed="false">🎨 ③ 想畫面</button>
+          </div>
+          <div id="question-box" class="question-box" hidden>
+            <p id="question" class="question" lang="en" tabindex="-1"></p>
+            <div class="tools">
+              <button id="listen-question" type="button">▶ 聽題目</button>
+              <button type="button" data-toggle="zh-hint" aria-controls="zh-hint" aria-expanded="false">譯 中文提示</button>
+              <button type="button" data-toggle="en-starter" aria-controls="en-starter" aria-expanded="false">Aa 英文句首</button>
+              <button id="change-question" type="button">↻ 換一題</button>
+            </div>
+            <div class="tools support">
+              <button type="button" data-toggle="look-hint" aria-controls="look-hint" aria-expanded="false">👀 再看一眼</button>
+              <button type="button" data-toggle="clue-hint" aria-controls="clue-hint" aria-expanded="false">💡 給我一個線索</button>
+              <button id="hide-support" type="button" class="plain" hidden>收起提示</button>
+            </div>
+            <p id="zh-hint" class="hint" hidden></p>
+            <p id="en-starter" class="hint" lang="en" hidden></p>
+            <p id="look-hint" class="hint" hidden></p>
+            <p id="clue-hint" class="hint" hidden></p>
+            <div class="answer">
+              <p class="handoff">孩子先想、先答，請家長等一等。</p>
+              <div class="tools">
+                <button id="speak-answer" type="button" class="primary" aria-controls="voice-tools" aria-expanded="false">🎙 說答案</button>
+                <label class="sr" for="speech-lang">辨識語言</label>
+                <select id="speech-lang"><option value="en-US">英文辨識</option><option value="zh-TW">中文辨識</option></select>
+                <button id="choose-answer" type="button" data-toggle="choices" aria-controls="choices" aria-expanded="false">☝ 點選答案</button>
+              </div>
+              <div id="voice-tools" class="voice-tools" hidden>
+                <button id="record" type="button">↻ 再說一次</button>
+                <button id="cancel-record" type="button" hidden>■ 停止收音</button>
+              </div>
+              <p class="status" id="mic-status" role="status"></p>
+              <div class="voice-tools" id="transcript-tools" hidden>
+                <span id="transcript"></span>
+                <button id="confirm" type="button">✓ 確認</button>
+                <button id="retry" type="button">↻ 重說</button>
+              </div>
+              <div id="choices" class="choices" hidden>
+                <button type="button" data-answer="Yellow">黃色 <span lang="en">Yellow</span></button>
+                <button type="button" data-answer="Round">圓形 <span lang="en">Round</span></button>
+              </div>
+              <button id="other-answer" class="plain" type="button" aria-controls="custom" aria-expanded="false">✎ 我有別的想法</button>
+              <form id="custom" class="custom" hidden>
+                <label class="sr" for="custom-text">我的想法</label>
+                <input id="custom-text" maxlength="240" placeholder="用中文或英文寫下你的想法" required>
+                <button type="submit">✓ 確認</button>
+              </form>
+            </div>
+            <section id="feedback" class="feedback" aria-label="孩子的回答與故事延伸" tabindex="-1" hidden>
+              <p id="original"></p>
+              <div id="expanded" hidden>
+                <p id="affirmation" class="response-text" lang="en"></p>
+                <p id="expansion" class="response-text" lang="en" hidden></p>
+                <div class="tools">
+                  <button id="replay" type="button">▶ 重聽英文</button>
+                  <button id="skip" type="button">↷ 跳過動畫</button>
+                </div>
+              </div>
+              <div id="story-choice" class="choice-panel" hidden>
+                <p>你想先自己想，還是看一個例子？</p>
+                <div class="tools">
+                  <button id="own-story" type="button">我想自己想</button>
+                  <button id="show-example" type="button">看一個例子</button>
+                </div>
+              </div>
+              <div class="follow" id="follow" hidden>
+                <p id="follow-question" class="response-text" lang="en"></p>
+                <div class="tools">
+                  <button id="listen-follow" type="button">▶ 聽追問</button>
+                  <button type="button" data-toggle="follow-zh" aria-controls="follow-zh" aria-expanded="false">譯 中文提示</button>
+                  <button type="button" data-toggle="follow-starter" aria-controls="follow-starter" aria-expanded="false">Aa 英文句首</button>
+                </div>
+                <p id="follow-zh" class="hint" hidden></p>
+                <p id="follow-starter" class="hint" lang="en" hidden></p>
+                <p>給家長 · 先讓孩子替故事加一句，再接上你自己的一句。</p>
+                <form id="follow-form" class="custom">
+                  <label class="sr" for="follow-input">孩子的第二輪想法</label>
+                  <input id="follow-input" maxlength="240" placeholder="可以直接說，也可以寫下你的想法" required>
+                  <button type="submit">✓ 留下這一句</button>
+                </form>
+                <p id="follow-reply" class="follow-reply" role="status" hidden></p>
+                <form id="designer" class="designer" hidden>
+                  <label for="design-name">這個光斑代表什麼？</label>
+                  <input id="design-name" maxlength="120" placeholder="例如 moon，或用中文寫下自己的想法" required>
+                  <div class="tools">
+                    <label for="design-color">顏色</label>
+                    <select id="design-color">
+                      <option value="yellow">黃色 Yellow</option><option value="blue">藍色 Blue</option>
+                      <option value="pink">粉紅色 Pink</option><option value="green">綠色 Green</option><option value="purple">紫色 Purple</option>
+                    </select>
+                    <label for="design-shape">形狀</label>
+                    <select id="design-shape">
+                      <option value="circle">圓形 Circle</option><option value="oval">橢圓形 Oval</option>
+                      <option value="square">方形 Square</option><option value="star">星形 Star</option>
+                    </select>
+                    <button type="submit">留下我的燈籠</button>
+                  </div>
+                  <p id="design-result" role="status"></p>
+                </form>
+              </div>
+            </section>
+          </div>
+          <details><summary>給家長</summary><p>等孩子先說，再問「你從哪裡看出來的？」</p></details>
+        </section>
+        <section id="reflection" class="reflect" aria-labelledby="reflect-title" hidden>
+          <h2 id="reflect-title">小小解說員</h2>
+          <p>用一句話介紹你的燈籠。你可以先說給家長聽，也可以錄下來自己回聽。</p>
+          <label for="reflect-source">挑一句剛才的想法，也可以重新想一句。</label>
+          <select id="reflect-source" class="reflection-source"><option value="">我想重新說一句</option></select>
+          <p id="reflect-chosen" class="hint" hidden></p>
+          <p class="response-text" id="reflect-example" lang="en">My lantern became a …</p>
+          <p>錄音只留在目前的頁籤，重新整理或關閉頁籤後會清除。</p>
+          <div class="tools">
+            <button id="reflect-start" class="primary" type="button">🎙 開始錄音</button>
+            <button id="reflect-stop" type="button" hidden>■ 完成錄音</button>
+            <button id="reflect-skip" type="button">先不錄</button>
+          </div>
+          <audio id="reflect-audio" controls aria-label="回聽我的錄音" hidden></audio>
+          <p id="reflect-clip-caption" class="status" hidden></p>
+          <p id="reflect-status" class="status" role="status"></p>
+          <div id="reflect-more" class="tools" hidden>
+            <button id="reflect-add" type="button">我想再加一句</button>
+          </div>
+          <p id="reflect-add-tip" class="hint" hidden>先把想加的一句說給家長聽，再按「重新錄音」把兩句一起說。</p>
+          <label for="recording-feeling">錄音或回聽時，你覺得怎麼樣？</label>
+          <select id="recording-feeling">
+            <option value="">可以稍後再選</option><option>我很開心，還想再說</option>
+            <option>有一點緊張，但願意試試</option><option>我想先說給家長聽</option><option>我今天想跳過</option>
+          </select>
+        </section>
+        <button id="reflect-open" class="quiet" type="button" aria-controls="reflection" hidden>開啟小小解說員</button>
+      </div>
+    </article>
+    <nav class="pagination" aria-label="電子書頁次">
+      <button id="prev" type="button">上一頁</button>
+      <div id="steps" class="steps"></div>
+      <button id="next" type="button" class="primary">下一頁</button>
+    </nav>
+    <details class="observation">
+      <summary>親子試讀觀察紀錄</summary>
+      <p>由觀察者填入這次試讀的操作次數。翻頁、選題、比較光斑及提交答案，每完成一次就記給實際操作者。</p>
+      <div class="observation-fields">
+        <label>孩子 <input id="child-count" type="number" min="0" max="999" step="1" inputmode="numeric" value="0"> 次</label>
+        <label>家長 <input id="adult-count" type="number" min="0" max="999" step="1" inputmode="numeric" value="0"> 次</label>
+      </div>
+      <p id="agency-result" role="status">填入實際次數後顯示兒童操作占比，評量門檻為 70%。</p>
+      <p>第三頁的回答會列在下方，方便對照孩子如何延伸想法。紀錄保留到本頁重新整理或關閉為止。</p>
+      <div class="record-table">
+        <table>
+          <caption class="sr">孩子的第一輪與第二輪回答</caption>
+          <thead><tr><th scope="col">題型</th><th scope="col">第一輪原話</th><th scope="col">追問</th><th scope="col">第二輪原話</th><th scope="col">孩子的光影選擇</th></tr></thead>
+          <tbody id="response-log"></tbody>
+        </table>
+      </div>
+      <p id="response-empty">目前還沒有回答紀錄。</p>
+      <label for="takeover-note">家長何時接手？原因是什麼？</label>
+      <textarea id="takeover-note" maxlength="1500" placeholder="例如孩子請家長協助操作麥克風，完成後由孩子繼續。"></textarea>
+      <label for="flow-note">提問出現的時機是否合適？</label>
+      <textarea id="flow-note" maxlength="1500" placeholder="記下孩子是否被打斷，以及他如何使用提示。"></textarea>
+      <p id="feeling-record">錄音感受尚未填寫。</p>
+    </details>
+  </main>
+  <script>
+    const pages = [
+      { kicker: '夜間遊行的紙燈籠', title: 'A Lantern for the Night Parade',
+        story: 'Tonight is the night parade. “Let’s make a lantern together,” I say.',
+        note: '親子聊一聊 · 如果要提著燈籠去遊行，你想做什麼顏色的燈籠？' },
+      { kicker: '一起做燈籠', title: 'A Little Paper Window',
+        story: 'We fold the red paper. We make a little round window. What will it look like when we turn on the light?',
+        note: '親子聊一聊 · 和家長用手比出圓形，再一起說 “A round window.”' },
+      { kicker: '點亮紙燈籠', title: 'A Circle on the Wall',
+        story: 'We turn on our lantern. A yellow circle shines on the wall.' },
+      { kicker: '出發去遊行', title: 'Into the Night',
+        story: 'We carry our lantern outside. The street is full of little lights. “Look! Our lantern is joining the parade!”',
+        note: '親子聊一聊 · 說出另一盞燈籠的顏色或形狀。' },
+      { kicker: '我們的遊行故事', title: 'One More Light',
+        story: 'Our little light moves down the street. It has a story of its own. What happens next?',
+        note: '一起編故事 · 孩子先加一句 “Maybe …”，家長接著補一句。' }
+    ];
+    const questions = [
+      { en: 'What color is the light on the wall?', zh: '牆上的光是什麼顏色？', starter: 'It’s …' },
+      { en: 'The circle gets bigger when we move the lantern away from the wall. Why do you think that happens?',
+        zh: '燈籠離牆越遠，光斑越大。你覺得為什麼？', starter: 'Maybe the light …' },
+      { en: 'What could this circle become in our parade? How would you change its color or shape?',
+        zh: '這個圓形在遊行裡可以變成什麼？你會怎麼改它的顏色或形狀？', starter: 'It could be … I’d make it …' }
+    ];
+    const branches = {
+      house: {
+        affirmation: 'You spotted yellow! The light is yellow.',
+        expansion: 'In our parade story, the yellow light becomes a window in a tiny house.',
+        follow: { en: 'Who might live inside?', zh: '誰可能住在裡面？', starter: 'Maybe a … lives inside.' }
+      },
+      wheel: {
+        affirmation: 'You noticed the shape! The light is round.',
+        expansion: 'In our parade story, the circle becomes a wheel and rolls along the wall.',
+        follow: { en: 'What could this wheel belong to?', zh: '這個輪子可能是哪個東西的一部分？', starter: 'It could be a wheel on a …' }
+      }
+    };
+    const followUps = [
+      { en: 'What does it remind you of?',
+        zh: '它讓你想到什麼？', starter: 'It reminds me of …' },
+      { en: 'Try both lantern positions. How does what you see help explain your idea?',
+        zh: '試試兩個位置。你看到的變化，如何幫你解釋剛才的想法？',
+        starter: 'I saw … when we moved the lantern. I think this happened because …' },
+      { en: 'How would your choice of color or shape make the parade feel?',
+        zh: '你選擇的顏色或形狀，會讓遊行有什麼感覺？',
+        starter: 'I’d choose … because it would make the parade feel …' }
+    ];
+    const supports = [
+      { look: '仔細看看牆上的光斑，你可以先用中文說出觀察。',
+        clue: '想想你曾在哪裡見過類似的顏色或形狀。' },
+      { look: '按「比較光斑」，仔細看看燈籠和牆的距離。',
+        clue: '在兩個位置間切換，找出光斑邊緣落在哪裡，再說說你的推測。' },
+      { look: '先想像你的燈籠正在遊行隊伍裡。',
+        clue: '想想你希望大家感到安靜、開心，還是驚奇，再挑一個顏色或形狀。' }
+    ];
+    const colors = {
+      yellow: { value: '#ffe07a', label: '黃色' }, blue: { value: '#86c9ff', label: '藍色' },
+      pink: { value: '#ffa8c6', label: '粉紅色' }, green: { value: '#9ee1a5', label: '綠色' },
+      purple: { value: '#c6a2ff', label: '紫色' }
+    };
+    const shapes = { circle: '圓形', oval: '橢圓形', square: '方形', star: '星形' };
+    const responses = [];
+    const el = (id) => document.getElementById(id);
+    const setText = (id, value) => { el(id).textContent = value; };
+    const show = (id, visible = true) => { el(id).hidden = !visible; };
+    const pressed = (node, value) => node.setAttribute('aria-pressed', String(value));
+    const expanded = (node, value) => node.setAttribute('aria-expanded', String(value));
+    const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+    const levelButtons = [...document.querySelectorAll('[data-level]')];
+    const toggles = [...document.querySelectorAll('[data-toggle]')];
+    const scene = el('scene');
+    let page = 0;
+    let level = null;
+    let promptOpen = false;
+    let promptIntroduced = false;
+    let promptTimer;
+    let far = false;
+    let branch = null;
+    let suggestedBranch = null;
+    let currentResponse;
+    let lightDesign;
+    let effectTimer;
+    let recognition;
+    let captured = '';
+    let utterance;
+    let reflectionOpen = true;
+    let recordingPending = false;
+    let recordingRequest = 0;
+    let activeRecording;
+    let clipUrl;
+
+    const pageButtons = pages.map((entry, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = index + 1;
+      button.setAttribute('aria-label', '第 ' + (index + 1) + ' 頁，' + entry.kicker);
+      button.onclick = () => goTo(index);
+      el('steps').append(button);
+      return button;
+    });
+
+    function renderPage() {
+      const entry = pages[page];
+      setText('count', '第 ' + (page + 1) + '／' + pages.length + ' 頁');
+      setText('page-kicker', entry.kicker);
+      setText('page-title', entry.title);
+      setText('story', entry.story);
+      setText('page-note', entry.note || '');
+      show('page-note', Boolean(entry.note));
+      show('cover', page !== 2);
+      show('scene', page === 2);
+      renderReflection();
+      el('prev').disabled = page === 0;
+      el('next').disabled = page === pages.length - 1;
+      pageButtons.forEach((button, index) => {
+        if (page === index) button.setAttribute('aria-current', 'page');
+        else button.removeAttribute('aria-current');
+      });
+      renderPrompt();
+    }
+
+    function goTo(index) {
+      if (index < 0 || index >= pages.length || page === index) return;
+      clearTimeout(promptTimer);
+      stopSpeech();
+      stopRecognition();
+      finishEffect();
+      setText('audio-status', '');
+      setText('mic-status', '');
+      if (page === 4) leaveReflection();
+      page = index;
+      renderPage();
+      el('page-title').focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+      schedulePrompt();
+    }
+
+    function schedulePrompt(delay = 3500) {
+      clearTimeout(promptTimer);
+      if (page !== 2 || promptIntroduced || utterance) return;
+      promptTimer = setTimeout(() => {
+        if (page !== 2 || promptIntroduced || utterance || document.activeElement === el('open-prompt')) return;
+        promptIntroduced = true;
+        promptOpen = true;
+        renderPrompt();
+      }, delay);
+    }
+
+    function renderPrompt() {
+      show('prompt', page === 2 && promptOpen);
+      show('open-prompt', page === 2 && !promptOpen);
+      expanded(el('open-prompt'), page === 2 && promptOpen);
+      show('question-box', level !== null);
+      show('choose-answer', level === 0);
+      show('compare', page === 2 && promptOpen && level === 1);
+      levelButtons.forEach((button, index) => pressed(button, level === index));
+      renderScene();
+    }
+
+    function selectLevel(index) {
+      stopSpeech();
+      resetAnswer();
+      far = false;
+      level = index;
+      for (const [id, key] of [['question', 'en'], ['zh-hint', 'zh'], ['en-starter', 'starter']]) {
+        setText(id, questions[index][key]);
+      }
+      setText('look-hint', supports[index].look);
+      setText('clue-hint', supports[index].clue);
+      for (const button of toggles) setToggle(button, false);
+      renderPrompt();
+      el('question').focus();
+    }
+
+    function setToggle(button, open) {
+      expanded(button, open);
+      show(button.dataset.toggle, open);
+      show('hide-support', toggles.some((toggle) => toggle.dataset.toggle !== 'choices' && !el(toggle.dataset.toggle).hidden));
+    }
+
+    function closeSupports() {
+      for (const button of toggles) {
+        if (button.dataset.toggle !== 'choices') setToggle(button, false);
+      }
+    }
+
+    function renderScene() {
+      const isFar = level === 1 && far;
+      scene.classList.toggle('far', isFar);
+      scene.classList.toggle('show-house', branch === 'house');
+      scene.classList.toggle('show-wheel', branch === 'wheel');
+      scene.classList.toggle('custom-light', Boolean(lightDesign));
+      for (const shape of Object.keys(shapes)) {
+        scene.classList.toggle('light-' + shape, lightDesign?.shape === shape);
+      }
+      if (lightDesign) scene.style.setProperty('--light-color', colors[lightDesign.color].value);
+      pressed(el('compare-button'), isFar);
+      setText('view-label', isFar ? '離牆較遠 · 光斑較大' : '靠近牆面 · 光斑較小');
+      const object = branch === 'house' ? '，光斑變成小屋的窗戶' :
+        branch === 'wheel' ? '，光斑變成有輪輻的輪子' : '';
+      const appearance = lightDesign ? colors[lightDesign.color].label + shapes[lightDesign.shape] : '黃色圓形';
+      scene.setAttribute('aria-label', '紙燈籠在牆上投出' + (isFar ? '較大' : '較小') + '的' + appearance + '光斑' + object);
+      show('design-caption', page === 2 && Boolean(lightDesign));
+      if (lightDesign) setText('design-caption', '我的光影 · ' + lightDesign.name + '（' + appearance + '）');
+    }
+
+    function stopSpeech() {
+      utterance = null;
+      window.speechSynthesis?.cancel();
+      show('stop-audio', false);
+    }
+
+    function speak(value) {
+      stopSpeech();
+      clearTimeout(promptTimer);
+      el('reflect-audio').pause();
+      setText('audio-status', '');
+      if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+        setText('audio-status', '這個瀏覽器目前無法朗讀。');
+        schedulePrompt();
+        return;
+      }
+      const speech = new SpeechSynthesisUtterance(value);
+      speech.lang = 'en-US';
+      speech.rate = .86;
+      utterance = speech;
+      speech.onend = speech.onerror = (event) => {
+        if (utterance !== speech) return;
+        utterance = null;
+        show('stop-audio', false);
+        if (event.type === 'error') setText('audio-status', '目前無法播放語音，可以閱讀畫面上的英文。');
+        schedulePrompt(1200);
+      };
+      show('stop-audio');
+      window.speechSynthesis.speak(speech);
+    }
+
+    function stopRecognition() {
+      const active = recognition;
+      recognition = null;
+      active?.abort();
+      el('record').disabled = false;
+      show('cancel-record', false);
+    }
+
+    function startRecognition() {
+      stopRecognition();
+      stopSpeech();
+      show('transcript-tools', false);
+      captured = '';
+      const Recognizer = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognizer) {
+        setText('mic-status', '這個瀏覽器目前不支援語音辨識，請點選答案或輸入想法。');
+        if (level === 0) setToggle(el('choose-answer'), true);
+        return;
+      }
+      const active = new Recognizer();
+      recognition = active;
+      active.lang = el('speech-lang').value;
+      active.interimResults = false;
+      active.maxAlternatives = 1;
+      setText('mic-status', '正在開啟麥克風…');
+      el('record').disabled = true;
+      show('cancel-record');
+      active.onstart = () => {
+        if (recognition === active) setText('mic-status', '正在聽，請說出你的答案。');
+      };
+      active.onresult = (event) => {
+        if (recognition !== active) return;
+        const result = event.results[event.resultIndex]?.[0];
+        const heard = result?.transcript?.trim();
+        if (!heard || (result.confidence > 0 && result.confidence < .35)) {
+          setText('mic-status', '剛才沒聽清楚，請再說一次或點選答案。');
+          return;
+        }
+        captured = heard;
+        setText('transcript', '你說的是「' + heard + '」嗎？');
+        setText('mic-status', '');
+        show('transcript-tools');
+        el('confirm').focus();
+      };
+      active.onerror = (event) => {
+        if (recognition !== active) return;
+        const denied = ['not-allowed', 'service-not-allowed', 'audio-capture'].includes(event.error);
+        setText('mic-status', denied ? '目前無法使用麥克風，請點選答案或輸入想法。' :
+          '剛才沒聽清楚，請再說一次或點選答案。');
+        stopRecognition();
+      };
+      active.onend = () => {
+        if (recognition !== active) return;
+        recognition = null;
+        el('record').disabled = false;
+        show('cancel-record', false);
+        if (!captured && el('mic-status').textContent.startsWith('正在')) {
+          setText('mic-status', '剛才沒聽清楚，請再說一次或點選答案。');
+        }
+      };
+      try {
+        active.start();
+      } catch {
+        stopRecognition();
+        setText('mic-status', '目前無法開啟麥克風，請點選答案或輸入想法。');
+      }
+    }
+
+    function identify(value) {
+      const normalized = value.normalize('NFKC').toLowerCase().replace(/[\p{P}\p{S}]/gu, '').trim();
+      if (/^(yellow|黃色的?|黄颜色|黄色的?|黃黃的|黄黄的)$/.test(normalized)) return 'house';
+      if (/^(round|圓形的?|圆形的?|圓圓的?|圆圆的?|圓的|圆的)$/.test(normalized)) return 'wheel';
+      return null;
+    }
+
+    function finishEffect() {
+      if (effectTimer !== undefined) clearTimeout(effectTimer);
+      effectTimer = undefined;
+      scene.classList.remove('motion');
+      show('skip', false);
+      if (branch) show('follow');
+    }
+
+    function resetAnswer() {
+      stopRecognition();
+      finishEffect();
+      branch = null;
+      suggestedBranch = null;
+      lightDesign = null;
+      currentResponse = undefined;
+      captured = '';
+      setText('mic-status', '');
+      show('voice-tools', false);
+      show('transcript-tools', false);
+      show('custom', false);
+      show('feedback', false);
+      show('designer', false);
+      show('story-choice', false);
+      expanded(el('speak-answer'), false);
+      expanded(el('other-answer'), false);
+      el('custom-text').value = '';
+    }
+
+    function setFollow(question) {
+      if (currentResponse) currentResponse.followQuestion = question.en;
+      setText('follow-question', question.en);
+      setText('follow-zh', question.zh);
+      setText('follow-starter', question.starter);
+      el('follow-input').value = '';
+      show('follow-reply', false);
+      for (const button of toggles.filter((toggle) => toggle.dataset.toggle.startsWith('follow-'))) setToggle(button, false);
+    }
+
+    function respond(value) {
+      const answer = value.trim();
+      if (!answer) return;
+      stopRecognition();
+      stopSpeech();
+      finishEffect();
+      show('transcript-tools', false);
+      setText('mic-status', '');
+      branch = null;
+      lightDesign = null;
+      suggestedBranch = level === 0 ? identify(answer) : null;
+      currentResponse = { level, first: answer, second: '', followQuestion: '', example: false };
+      responses.push(currentResponse);
+      closeSupports();
+      setText('original', '你說：' + answer);
+      const story = branches[suggestedBranch];
+      setFollow(followUps[level ?? 0]);
+      show('feedback');
+      show('expanded');
+      show('expansion', false);
+      show('story-choice', Boolean(story));
+      show('designer', false);
+      show('follow');
+      show('skip', false);
+      if (story) {
+        setText('affirmation', story.affirmation);
+        speak(story.affirmation);
+      } else {
+        setText('affirmation', 'Thank you for sharing your idea.');
+      }
+      renderScene();
+      renderResponses();
+      el('feedback').focus({ preventScroll: true });
+    }
+
+    function showExample() {
+      if (!suggestedBranch || !currentResponse) return;
+      finishEffect();
+      lightDesign = null;
+      branch = suggestedBranch;
+      currentResponse.example = true;
+      const story = branches[branch];
+      setText('expansion', story.expansion);
+      show('expansion');
+      show('story-choice', false);
+      show('designer', false);
+      setFollow(story.follow);
+      show('follow', motionPreference.matches);
+      if (!motionPreference.matches) {
+        void scene.offsetWidth;
+        scene.classList.add('motion');
+        show('skip');
+        effectTimer = setTimeout(finishEffect, branch === 'house' ? 1200 : 1350);
+      }
+      speak(story.expansion);
+      renderScene();
+      renderResponses();
+      el('feedback').focus({ preventScroll: true });
+    }
+
+    function renderResponses() {
+      const body = el('response-log');
+      body.replaceChildren();
+      for (const response of responses) {
+        const row = document.createElement('tr');
+        const design = response.design;
+        const label = design ? design.name + '（' + colors[design.color].label + shapes[design.shape] + '）' : '尚未選擇';
+        const question = response.followQuestion + (response.example ? '（孩子選擇看範例）' : '');
+        for (const value of [['看光斑', '猜原因', '想畫面'][response.level], response.first, question, response.second || '尚未留下第二句', label]) {
+          const cell = document.createElement('td');
+          cell.textContent = value;
+          row.append(cell);
+        }
+        body.append(row);
+      }
+      show('response-empty', responses.length === 0);
+    }
+
+    function reflectionSources() {
+      const sources = [];
+      responses.forEach((response, index) => {
+        const prefix = '第 ' + (index + 1) + ' 次・';
+        sources.push({ id: index + '-first', text: response.first, label: prefix + '第一句', starter: 'I noticed …' });
+        if (response.second) sources.push({
+          id: index + '-second', text: response.second, label: prefix + '補充想法',
+          starter: response.level === 1 ? 'I think … because …' : 'My idea is …'
+        });
+        if (response.design) {
+          const design = response.design;
+          sources.push({ id: index + '-design', text: design.name + '（' + colors[design.color].label + shapes[design.shape] + '）',
+            label: prefix + '我的燈籠', starter: 'My light is ' + design.color + '. It reminds me of …' });
+        }
+      });
+      return sources;
+    }
+
+    function renderReflectionSources() {
+      const select = el('reflect-source');
+      const selected = select.value;
+      select.replaceChildren();
+      const option = document.createElement('option');
+      option.value = '';
+      option.textContent = '我想重新說一句';
+      select.append(option);
+      const sources = reflectionSources();
+      for (const source of sources) {
+        const option = document.createElement('option');
+        option.value = source.id;
+        option.textContent = source.label + ' · ' + source.text;
+        select.append(option);
+      }
+      select.value = sources.some((source) => source.id === selected) ? selected : '';
+      const source = sources.find((source) => source.id === select.value);
+      show('reflect-chosen', Boolean(source));
+      setText('reflect-chosen', source ? '我挑的想法：「' + source.text + '」' : '');
+      setText('reflect-example', source?.starter || 'My lantern became a …');
+    }
+
+    function setPromptOpen(open) {
+      clearTimeout(promptTimer);
+      promptIntroduced = true;
+      promptOpen = open;
+      if (!open) {
+        stopRecognition();
+        finishEffect();
+        setText('mic-status', '');
+      }
+      renderPrompt();
+      (open ? levelButtons[level ?? 0] : el('open-prompt')).focus();
+    }
+
+    function renderReflection() {
+      const onPage = page === 4;
+      const busy = recordingPending || Boolean(activeRecording);
+      show('reflection', onPage && reflectionOpen);
+      show('reflect-open', onPage && !reflectionOpen);
+      show('reflect-stop', activeRecording?.recorder.state === 'recording');
+      show('reflect-audio', Boolean(clipUrl) && !busy);
+      el('listen-story').disabled = onPage && busy;
+      el('reflect-start').disabled = busy;
+      el('reflect-source').disabled = busy;
+      setText('reflect-start', clipUrl ? '🎙 重新錄音' : '🎙 開始錄音');
+      setText('reflect-skip', clipUrl ? '收起' : '先不錄');
+      renderReflectionSources();
+      show('reflect-more', Boolean(clipUrl) && !busy);
+      show('reflect-clip-caption', Boolean(clipUrl) && !busy);
+    }
+
+    function leaveReflection() {
+      recordingRequest += 1;
+      recordingPending = false;
+      const recording = activeRecording;
+      activeRecording = null;
+      if (recording?.recorder.state === 'recording') recording.recorder.stop();
+      recording?.stream.getTracks().forEach((track) => track.stop());
+      el('reflect-audio').pause();
+      if (!clipUrl) setText('reflect-status', '');
+    }
+
+    async function startReflection() {
+      if (page !== 4 || !reflectionOpen || recordingPending || activeRecording) return;
+      if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
+        setText('reflect-status', '這個瀏覽器目前無法錄音。你可以直接說給家長聽。');
+        return;
+      }
+      stopSpeech();
+      el('reflect-audio').pause();
+      const request = ++recordingRequest;
+      recordingPending = true;
+      setText('reflect-status', '正在開啟麥克風…');
+      renderReflection();
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        if (request !== recordingRequest) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
+        const recorder = new window.MediaRecorder(stream);
+        const source = reflectionSources().find((entry) => entry.id === el('reflect-source').value);
+        const recording = { recorder, stream, idea: source?.text };
+        const chunks = [];
+        activeRecording = recording;
+        recorder.ondataavailable = (event) => {
+          if (event.data.size) chunks.push(event.data);
+        };
+        recorder.onerror = () => {
+          if (activeRecording !== recording) return;
+          leaveReflection();
+          setText('reflect-status', '錄音中斷了。你可以再試一次，或直接說給家長聽。');
+          renderReflection();
+        };
+        recorder.onstop = () => {
+          stream.getTracks().forEach((track) => track.stop());
+          if (activeRecording !== recording) return;
+          activeRecording = null;
+          if (chunks.length) {
+            if (clipUrl) URL.revokeObjectURL(clipUrl);
+            clipUrl = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType || chunks[0].type }));
+            el('reflect-audio').src = clipUrl;
+            setText('reflect-clip-caption', recording.idea ? '這段錄音選用的想法：「' + recording.idea + '」' : '這段錄音由我自由介紹。');
+            show('reflect-add-tip', false);
+            setText('reflect-status', '你用自己的話介紹了燈籠！想聽聽自己的聲音嗎？');
+          } else {
+            setText('reflect-status', '這次沒有收到錄音。你可以再試一次，或直接說給家長聽。');
+          }
+          renderReflection();
+          el(clipUrl ? 'reflect-audio' : 'reflect-start').focus({ preventScroll: true });
+        };
+        recorder.start();
+        setText('reflect-status', '正在錄音，你可以用自己的速度說。');
+      } catch {
+        stream?.getTracks().forEach((track) => track.stop());
+        if (request !== recordingRequest) return;
+        activeRecording = null;
+        setText('reflect-status', '目前無法開啟麥克風。你可以直接說給家長聽。');
+      } finally {
+        if (request === recordingRequest) {
+          recordingPending = false;
+          renderReflection();
+          if (activeRecording?.recorder.state === 'recording') el('reflect-stop').focus();
+        }
+      }
+    }
+
+    function updateAgency() {
+      const inputs = [el('child-count'), el('adult-count')];
+      const [child, adult] = inputs.map((input) => input.valueAsNumber);
+      if (inputs.some((input) => !input.validity.valid || !Number.isInteger(input.valueAsNumber))) {
+        setText('agency-result', '請填入 0 到 999 的整數，沒有操作可填 0。');
+        return;
+      }
+      const total = child + adult;
+      if (!total) {
+        setText('agency-result', '填入實際次數後顯示兒童操作占比，評量門檻為 70%。');
+        return;
+      }
+      const percentage = child * 100 / total;
+      const status = child * 10 >= total * 7 ? '達到 70% 門檻' : '低於 70% 門檻';
+      setText('agency-result', '兒童操作占比約 ' + percentage.toFixed(1) + '%（' + child + '／' + total + ' 次），' + status + '。');
+    }
+
+    el('prev').onclick = () => goTo(page - 1);
+    el('next').onclick = () => goTo(page + 1);
+    el('listen-story').onclick = () => { stopRecognition(); speak(pages[page].story); };
+    el('listen-question').onclick = () => { stopRecognition(); speak(questions[level].en); };
+    el('stop-audio').onclick = () => { stopSpeech(); schedulePrompt(1200); };
+    el('open-prompt').onclick = () => setPromptOpen(true);
+    el('close-prompt').onclick = () => setPromptOpen(false);
+    el('change-question').onclick = () => {
+      stopSpeech();
+      resetAnswer();
+      level = null;
+      renderPrompt();
+      levelButtons[0].focus();
+    };
+    el('compare-button').onclick = () => { far = !far; renderScene(); };
+    el('speak-answer').onclick = () => {
+      show('voice-tools');
+      expanded(el('speak-answer'), true);
+      startRecognition();
+    };
+    el('record').onclick = startRecognition;
+    el('retry').onclick = startRecognition;
+    el('cancel-record').onclick = () => {
+      stopRecognition();
+      setText('mic-status', '收音已停止。你可以再說一次或點選答案。');
+      el('record').focus();
+    };
+    el('confirm').onclick = () => respond(captured);
+    el('other-answer').onclick = () => {
+      show('custom');
+      expanded(el('other-answer'), true);
+      el('custom-text').focus();
+    };
+    el('custom').onsubmit = (event) => {
+      event.preventDefault();
+      respond(el('custom-text').value);
+    };
+    el('listen-follow').onclick = () => {
+      stopRecognition();
+      speak(el('follow-question').textContent);
+    };
+    el('follow-form').onsubmit = (event) => {
+      event.preventDefault();
+      const reply = el('follow-input').value.trim();
+      if (!reply || !currentResponse) return;
+      currentResponse.second = reply;
+      setText('follow-reply', '你補充：「' + reply + '」');
+      show('follow-reply');
+      show('story-choice', false);
+      closeSupports();
+      show('designer', level !== 1);
+      el('design-name').value = reply.slice(0, 120);
+      el('design-color').value = 'yellow';
+      el('design-shape').value = 'circle';
+      setText('design-result', '');
+      renderResponses();
+    };
+    el('hide-support').onclick = () => {
+      closeSupports();
+      el('listen-question').focus({ preventScroll: true });
+    };
+    el('own-story').onclick = () => {
+      show('story-choice', false);
+      show('follow');
+      el('follow-input').focus();
+    };
+    el('show-example').onclick = showExample;
+    el('designer').onsubmit = (event) => {
+      event.preventDefault();
+      const name = el('design-name').value.trim();
+      const color = el('design-color').value;
+      const shape = el('design-shape').value;
+      if (!name || !currentResponse || !Object.hasOwn(colors, color) || !Object.hasOwn(shapes, shape)) return;
+      finishEffect();
+      stopSpeech();
+      branch = null;
+      lightDesign = { name, color, shape };
+      currentResponse.design = lightDesign;
+      show('expansion', false);
+      setText('design-result', '你的光影已變成' + colors[color].label + shapes[shape] + '，也會帶到最後一頁。');
+      renderScene();
+      renderResponses();
+    };
+    el('reflect-source').onchange = renderReflectionSources;
+    el('reflect-add').onclick = () => {
+      show('reflect-add-tip');
+      el('reflect-start').focus({ preventScroll: true });
+    };
+    el('recording-feeling').onchange = () => {
+      const feeling = el('recording-feeling').value;
+      setText('feeling-record', feeling ? '孩子的錄音感受 · ' + feeling : '錄音感受尚未填寫。');
+    };
+    el('reflect-start').onclick = startReflection;
+    el('reflect-stop').onclick = () => {
+      if (activeRecording?.recorder.state !== 'recording') return;
+      activeRecording.recorder.stop();
+      setText('reflect-status', '正在準備回聽…');
+      renderReflection();
+    };
+    el('reflect-skip').onclick = () => {
+      leaveReflection();
+      reflectionOpen = false;
+      renderReflection();
+      el('reflect-open').focus();
+    };
+    el('reflect-open').onclick = () => {
+      reflectionOpen = true;
+      renderReflection();
+      el('reflect-start').focus();
+    };
+    el('reflect-audio').onplay = stopSpeech;
+    el('child-count').oninput = updateAgency;
+    el('adult-count').oninput = updateAgency;
+    window.addEventListener('pagehide', () => {
+      leaveReflection();
+      if (clipUrl) URL.revokeObjectURL(clipUrl);
+      clipUrl = undefined;
+      el('reflect-audio').removeAttribute('src');
+      setText('reflect-status', '');
+      renderReflection();
+    });
+    el('skip').onclick = () => {
+      finishEffect();
+      el('feedback').focus({ preventScroll: true });
+    };
+    el('replay').onclick = () => {
+      speak(el('affirmation').textContent.split('! ').at(-1));
+    };
+    toggles.forEach((button) => {
+      button.onclick = () => setToggle(button, el(button.dataset.toggle).hidden);
+    });
+    levelButtons.forEach((button, index) => { button.onclick = () => selectLevel(index); });
+    document.querySelectorAll('[data-answer]').forEach((button) => {
+      button.onclick = () => respond(button.dataset.answer);
+    });
+    motionPreference.addEventListener('change', () => {
+      if (motionPreference.matches) finishEffect();
+    });
+    renderPage();
+  </script>
+</body>
+</html>
